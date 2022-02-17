@@ -12,11 +12,11 @@
       </div>
     </v-row>
     
-    <v-row v-if="!loans.length && isLoading" justify="center" no-gutters class="my-12">
+    <v-row v-if="isLoading" justify="center" no-gutters class="my-12">
       <v-progress-circular indeterminate color="primary" size="64" />
     </v-row>
 
-    <v-row v-else-if="!loans.length" justify="center" no-gutters class="my-12">
+    <v-row v-else-if="!loans.length && !isLoading" justify="center" no-gutters class="my-12">
       <v-alert dense type="info">
         No loans registered.
       </v-alert>

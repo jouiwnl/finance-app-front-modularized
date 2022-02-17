@@ -41,11 +41,11 @@
       </v-row>
     </v-container>
     
-    <v-row v-if="!loans.length && isLoading" justify="center" no-gutters class="my-12">
+    <v-row v-if="isLoading" justify="center" no-gutters class="my-12">
       <v-progress-circular indeterminate color="primary" size="64" />
     </v-row>
 
-    <v-row v-if="!loans.length || isLoading" justify="center" no-gutters class="my-12">
+    <v-row v-if="!loans.length && !isLoading" justify="center" no-gutters class="my-12">
       <v-alert dense type="info">
         Not found any loans with the select filters.
       </v-alert>
@@ -146,8 +146,8 @@ export default {
         response.data.map(result => {
           this.partners.push(result);
         });
-        this.partners = this.partners.filter(partner => partner.situacao != 'DEACTIVADED').sort();
         this.isLoading = false;
+        this.partners = this.partners.filter(partner => partner.situacao != 'DEACTIVADED').sort();
       }).catch(err => {
         this.$vToastify.error({
           title: 'Error!',

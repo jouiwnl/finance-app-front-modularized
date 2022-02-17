@@ -12,17 +12,17 @@
       </div>
     </v-row>
     
-    <v-row v-if="!partners.length && isLoading" justify="center" no-gutters class="my-12">
+    <v-row v-if="isLoading" justify="center" no-gutters class="my-12">
       <v-progress-circular indeterminate color="primary" size="64" />
     </v-row>
 
-    <v-row v-else-if="!partners.length" justify="center" no-gutters class="my-12">
+    <v-row v-if="!partners.length && !isLoading" justify="center" no-gutters class="my-12">
       <v-alert dense type="info">
         No partners registered.
       </v-alert>
     </v-row>
 
-    <v-row v-else-if="partners.length">
+    <v-row v-if="partners.length">
       <v-col sm="4" v-for="partner in partners" :key="partner.id">
         <v-card :disabled="partner.situacao == 'DEACTIVADED'">
           <v-card-title>
@@ -59,7 +59,7 @@ export default {
 
   data: () => ({
     partners: [],
-    isLoading: false
+    isLoading: true
   }),
 
   async created() {
@@ -68,15 +68,21 @@ export default {
 
   methods: {
     async init() {
+      this.isLoading = true;
       this.partners = [];
-      try {
-        PartnerService.findAll().then(response => {
-          this.partners = response.data;
-          this.partners = this.partners.sort();
-        });      
-      } finally {
+
+      PartnerService.findAll().then(response => {
+        this.partners = response.data;
+        this.partners = this.partners.sort();
         this.isLoading = false;
-      } 
+      }).catch(err => {
+        this.$vToastify.error({
+          title: 'Error!',
+          body: 'An error ocurred! Please try again!',
+          canTimeout: true,
+          duration: 2000
+        });
+      }); 
     },
 
     inactive(idPartner) {
