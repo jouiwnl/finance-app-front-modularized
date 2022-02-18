@@ -13,19 +13,19 @@
 
       <v-row v-if="!isLoading" justify="center">
         <v-col sm="4">
-          <v-text-field v-model="partner.nome" label="Name" :rules="rules" hide-details="auto"></v-text-field>
+          <v-text-field v-model="partner.nome" label="Name" :rules="rules.text" hide-details="auto"></v-text-field>
         </v-col>
       </v-row>
 
       <v-row v-if="!isLoading" justify="center">
         <v-col sm="4">
-          <v-text-field v-model="partner.email" label="Email" :rules="rules" hide-details="auto"></v-text-field>
+          <v-text-field v-model="partner.email" label="Email" :rules="rules.email" hide-details="auto"></v-text-field>
         </v-col>
       </v-row>
 
       <v-row v-if="!isLoading" justify="center">
         <v-col sm="4" class="buttons-group">
-          <v-btn to='/partners' depressed>Cancel</v-btn>
+          <v-btn v-on:click="$router.back()" depressed>Cancel</v-btn>
           <v-btn 
               :disabled="!partner.nome || !partner.email" 
               v-on:click="salvar(partner)"
@@ -41,6 +41,7 @@
 
 <script>
 import PartnerService from '../services/PartnerService';
+import rules from '../../../rules/rules';
 
 export default {
   name: "Partner",
@@ -48,10 +49,7 @@ export default {
   data: () => ({
     partner: {},
     isLoading: false,
-    rules: [
-        value => !!value || 'Required.',
-        value => (value && value.length >= 3) || 'Min 3 characters',
-    ],
+    rules: rules,
   }),
 
   async created() {

@@ -5,7 +5,6 @@ window.$ = window.jQuery = require('jquery');
 import 'jquery';
 
 import 'vue-search-select/dist/VueSearchSelect.css';
-
 import 'vue2-datepicker/index.css';
 
 import VueToastify from "vue-toastify";

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="padding: 20px;">
     <v-row justify="space-between" align="center">
       <h1 class="mb-3">Loans</h1>
       <div>
@@ -16,7 +16,7 @@
       <v-progress-circular indeterminate color="primary" size="64" />
     </v-row>
 
-    <v-row v-else-if="!loans.length && !isLoading" justify="center" no-gutters class="my-12">
+    <v-row v-if="!loans.length && !isLoading" justify="center" no-gutters class="my-12">
       <v-alert dense type="info">
         No loans registered.
       </v-alert>
@@ -26,7 +26,7 @@
       <v-col sm="4" v-for="loan in loans" :key="loan.id">
         <v-card :disabled="loan.situacao == 'DEACTIVADED' || loan.situacao == 'PAID'">
           <v-card-title>
-            {{ loan.stockId }}
+            # {{ loan.stockId }}
           </v-card-title>
           <v-card-subtitle>
             <small>({{loan.nomeCarro}})</small>
@@ -69,6 +69,7 @@ export default {
 
   methods: {
     async init() {
+      this.isLoading = true;
       this.loans = [];
       LoanService.findAll().then(response => {
         this.loans = response.data;

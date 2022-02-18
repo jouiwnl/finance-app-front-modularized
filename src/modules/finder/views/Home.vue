@@ -2,7 +2,7 @@
   <div>
     <v-container class="text-center">
       <h1 class="mb-3 text-center">Find loans</h1>
-      <v-row>
+      <v-row align="center">
         <v-col sm>
           <span>Partner</span>
           <model-list-select :list="partners"
@@ -14,7 +14,7 @@
         </v-col>
         
         <v-col sm>
-          <span>Loan situation</span>
+          <span>Situation</span>
           <model-list-select :list="options"
                       v-model="finder.situation"
                       option-value="value"
@@ -54,7 +54,7 @@
     <v-simple-table
       fixed-header
       height="700px"
-      v-else-if="loans.length"
+      v-if="!isLoading && loans.length"
     >
       <template v-slot:default>
         <thead>
@@ -78,21 +78,21 @@
             v-for="loan in loans"
             :key="loan.id"
           >
-            <td class="text-center">{{ loan.contrato.banco.nome }}</td>
-            <td class="text-center">{{ loan.contrato.stockId }}</td>
+            <td class="text-center"><a v-on:click="loadPartner(loan.contrato.banco.id)">{{ loan.contrato.banco.nome }}</a></td>
+            <td class="text-center"><a v-on:click="loadLoan(loan.contrato.id)">{{ loan.contrato.stockId }}</a></td>
             <td class="text-center">{{ loan.nroParcela }}/{{ loan.contrato.qtdeParcelas }}</td>
-            <td class="text-center">{{ loan.diasProximaParcela }}</td>
+            <td class="text-center">{{ loan.diasPrimeiraParcela ? loan.diasPrimeiraParcela : loan.diasProximaParcela }}</td>
             <td class="text-center">{{ loan.dataPagamento }}</td>
             <td class="text-center">juros</td>
-            <td class="text-center">{{loan.contrato.totalPagar}}</td>
-            <td class="text-center">{{loan.vlParcela}}</td>
-            <td class="text-center">{{loan.vlParcela}}</td>
-            <td class="text-center">{{loan.contrato.totalPagar}}</td>
+            <td class="text-center">{{loan.contrato.totalPagar.toFixed(2)}}</td>
+            <td class="text-center">{{loan.vlParcela.toFixed(2)}}</td>
+            <td class="text-center">{{loan.vlParcela.toFixed(2)}}</td>
+            <td class="text-center">{{loan.contrato.totalPagar.toFixed(2)}}</td>
             <td class="text-center">{{loan.situacao}}</td>
             <td class="text-center">
                 {{loan.dataPagamentoPaga}}
                 <span v-if="loan.situacao != 'PAID'">
-                    <input type="checkbox">
+                    <input type="checkbox" v-on:click="teste($event, loan)">
                     Pay
                 </span>
                 
@@ -105,7 +105,6 @@
 </template>
 
 <script>
-import axios from "axios";
 import moment from 'moment';
 import { ModelListSelect } from 'vue-search-select';
 import DatePicker from 'vue2-datepicker';
@@ -170,11 +169,25 @@ export default {
       }).finally(() => {
           this.isLoading = false;
       }); 
+    },
+
+    loadPartner(idBanco) {
+      this.$router.push(`/partners/${idBanco}`);
+    },
+
+    loadLoan(idLoan) {
+      this.$router.push(`/loans/${idLoan}`);
+    },
+
+    teste(event, loan) {
+      console.log(loan)
     }
   }
 };
 </script>
 
 <style scoped>
-
+  a {
+    text-decoration: none;
+  }
 </style>

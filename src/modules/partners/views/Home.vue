@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="padding: 20px;">
     <v-row justify="space-between" align="center">
       <h1 class="mb-3">Partners</h1>
       <div>
