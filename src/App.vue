@@ -6,6 +6,7 @@
         <v-tab to="/partners">Partners</v-tab>
         <v-tab to="/loans">Loans</v-tab>
         <v-tab to="/finder">Find Loans</v-tab>
+        <v-tab to="/emails">Configure Emails</v-tab>
       </v-tabs>
     </v-app-bar>
 

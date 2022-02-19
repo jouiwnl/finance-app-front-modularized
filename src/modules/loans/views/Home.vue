@@ -31,7 +31,7 @@
           <v-card-subtitle>
             <small>({{loan.nomeCarro}})</small>
           </v-card-subtitle>
-          <v-card-actions v-if="loan.situacao != 'DEACTIVADED'">
+          <v-card-actions v-if="loan.situacao != 'DEACTIVADED' && loan.situacao != 'PAID'">
             <v-spacer />
             <v-btn :to="`/loans/${loan.id}`" depressed>
               View loan
@@ -43,6 +43,11 @@
           <v-card-actions v-if="loan.situacao == 'DEACTIVADED'">
             <v-btn depressed color="error">
               DEACTIVADED
+            </v-btn>
+          </v-card-actions>
+          <v-card-actions v-if="loan.situacao == 'PAID'">
+            <v-btn depressed color="success">
+              ALL PAID
             </v-btn>
           </v-card-actions>
         </v-card>

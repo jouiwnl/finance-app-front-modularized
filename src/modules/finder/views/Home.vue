@@ -172,6 +172,7 @@ export default {
     async init() {
       this.isLoading = true;
       this.loans = [];
+      this.partners = [{ nome: 'All' }];
       PartnerService.findAll().then(response => {
         response.data.map(result => {
           this.partners.push(result);
@@ -224,22 +225,22 @@ export default {
     },
 
     bulkPay(loansList) {
-      this.isLoading = true;
-      this.$vToastify.info({
-        title: 'Payment in process!',
-        body: 'Sending emails to partners to verify your paid loans.',
-        canTimeout: true,
-        duration: 5000
-      });
+      if (this.checkMoreThanOnePartner(loansList)) {
+        this.isLoading = true;
+        this.$vToastify.info({
+          title: 'Payment in process!',
+          body: 'Sending emails to partners to verify your paid loans.',
+          canTimeout: true,
+          duration: 5000
+        });
 
-      let nrosParcelas = [];
+        let nrosParcelas = [];
 
-      loansList.map(loan => {
-        nrosParcelas.push(loan.nroParcela);
-      });
-
-      loansList.map(loan => {
-        LoanService.pay(loan.contrato.id, nrosParcelas).then(response => {
+        loansList.map(loan => {
+          nrosParcelas.push(loan.nroParcela);
+        })
+        
+        LoanService.pay(loansList[0].contrato.id, nrosParcelas).then(response => {
           this.$vToastify.success({
             title: 'Success!',
             body: 'Payments processed with success.',
@@ -257,7 +258,31 @@ export default {
             duration: 2000
           });
         });
+
+        this.$forceUpdate(this.loans);
+        this.$forceUpdate(this.partners);
+      }
+    },
+
+    checkMoreThanOnePartner(loanList) {
+      let newList = _.uniqBy(loanList, (loan) => {
+        return loan.idContrato;
       });
+
+      console.log(newList)
+
+      if (newList.length > 1) {
+        this.$vToastify.error({
+          title: 'Error!',
+          body: `It's not possible pay two different partners at the same time. Please, use filters to find and pay separately!`,
+          canTimeout: true,
+          duration: 3000
+        });
+
+        return false;
+      }
+
+      return true;
     }
   }
 };

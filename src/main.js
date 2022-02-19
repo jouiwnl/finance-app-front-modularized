@@ -12,6 +12,7 @@ import VueToastify from "vue-toastify";
 import partnersModule from "./modules/partners";
 import finderModule from "./modules/finder";
 import loansModule from "./modules/loans";
+import emailsModule from "./modules/emails";
 
 import { registerModules } from "./register-modules";
 import vuetify from "./plugins/vuetify";
@@ -21,7 +22,8 @@ import VuetifyConfirm from 'vuetify-confirm';
 registerModules({
   partners: partnersModule,
   loans: loansModule,
-  finder: finderModule
+  finder: finderModule,
+  emails: emailsModule
 });
 
 Vue.config.productionTip = false;
