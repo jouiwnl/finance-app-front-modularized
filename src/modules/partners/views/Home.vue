@@ -7,7 +7,7 @@
           <v-icon>mdi-refresh</v-icon>
         </v-btn>
         <v-btn depressed color="primary" to="partners/register">
-          <v-icon small class="pull-right">mdi-plus</v-icon> Register partner
+          <v-icon small class="pull-right">mdi-plus</v-icon> Partner
         </v-btn>
       </div>
     </v-row>

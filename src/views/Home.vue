@@ -1,9 +1,20 @@
 <template>
   <div>
     <v-container>
-      <v-row v-if="isLoading" justify="center" no-gutters class="my-12">
-        <v-progress-circular indeterminate color="primary" size="64" />
-      </v-row>
+
+      <v-container v-if="isLoading">
+        <v-row justify="center" no-gutters class="my-12">
+          <v-progress-circular indeterminate color="primary" size="64" />
+        </v-row>
+
+        <v-row justify="center">
+          <span>Loading your Dashboard, please wait!</span>
+        </v-row>
+
+        <v-row justify="center" style="margin-top: 8px;">
+          <span>This may gonna take a while.</span>
+        </v-row>
+      </v-container>
 
       <v-row align="center" justify="center" v-if="!isLoading">
         <v-col sm="6">
@@ -12,10 +23,22 @@
               <h3>{{ partner.nome }} Loans</h3>
             </v-card-title>
             <v-card-subtitle style="text-align: center;">
-              <span>150 Total</span> <br>
-              <span>75 Unpaid, 75 Paid</span> <br>
-              <span>Balance $397,655.13</span>
+              <span>{{partner.totalReports}} Total</span> <br>
+              <span>{{partner.totalReportsUnpaid}} Unpaid, {{partner.totalReportsPaid}} Paid, {{partner.totalReportsInactives}} Inactives</span> <br>
+              <span>Balance $ {{partner.valorTotalReports ? partner.valorTotalReports.toFixed(2) : 0}}</span>
             </v-card-subtitle>
+            <v-container style="padding-left: 25px; padding-right: 25px;">
+              <v-progress-linear
+                color="blue"
+                height="20"
+                style="border-radius: 4px;"
+              ></v-progress-linear>
+            </v-container>
+            <v-row justify="center" style="margin-top: 20px;">
+              <v-btn color="primary" depressed>
+                Calculate pay-off
+              </v-btn>
+            </v-row>
           </v-card>
         </v-col>
 
@@ -28,7 +51,7 @@
           <v-row justify="center" style="margin-top: 10px;">
             <v-simple-table
               fixed-header
-              height="100%"
+              height="650px"
               v-if="!isLoading && partners.length"
             >
               <template v-slot:default>
@@ -48,9 +71,9 @@
                   >
                     <td class="text-center"><a v-on:click="loadLoan(loan.contrato.id)">{{ loan.contrato.stockId }}</a></td>
                     <td class="text-center">{{ loan.nroParcela }}/{{ loan.contrato.qtdeParcelas }}</td>
-                    <td class="text-center">13/07/2022</td>
-                    <td class="text-center">3.00</td>
-                    <td class="text-center">Balance</td>
+                    <td class="text-center">{{loan.contrato.dataInicioContrato}}</td>
+                    <td class="text-center">${{loan.vlParcela.toFixed(2)}}</td>
+                    <td class="text-center">${{(loan.contrato.totalPagar - loan.vlParcela).toFixed(2)}}</td>
                   </tr>
                 </tbody>
               </template>
@@ -89,14 +112,20 @@ export default {
       PartnerService.findAll().then(response => {
         this.partners = response.data;
 
-        ParcelaService.buscaAvancada().then(responseLoan => {
+        ParcelaService.thisweekpayments().then(responseLoan => {
           this.loans = responseLoan.data;
         }).then(() => {
           _.remove(this.loans, (item) => {
             return item.situacao == 'PAID'
           });
-
           this.isLoading = false;
+        }).catch(err => {
+          this.$vToastify.error({
+            title: 'Error!',
+            body: 'An error ocurred! Please try again!',
+            canTimeout: true,
+            duration: 2000
+          });
         });
       }).catch(err => {
         this.$vToastify.error({

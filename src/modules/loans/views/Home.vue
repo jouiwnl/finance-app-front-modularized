@@ -7,7 +7,7 @@
           <v-icon>mdi-refresh</v-icon>
         </v-btn>
         <v-btn depressed color="primary" to="loans/register">
-          <v-icon small class="pull-right">mdi-plus</v-icon> Register loan
+          <v-icon small class="pull-right">mdi-plus</v-icon> Loan
         </v-btn>
       </div>
     </v-row>
@@ -88,6 +88,7 @@ export default {
     inactive(idLoan) {
       this.$confirm(`This action will deactivate this register (this action cannot be undone). Do you wish to continue?`).then(response => {
         if (response) {
+          this.isLoading = true;
           LoanService.inactive(idLoan).then(() => {
             this.$vToastify.success({
               title: 'Success!',

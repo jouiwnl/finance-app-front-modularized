@@ -57,8 +57,9 @@
     <v-row justify="center" style="margin-top: 10px;">
       <v-simple-table
         fixed-header
-        height="550px"
+        height="500px"
         v-if="!isLoading && loans.length"
+        style="width: 100%;"
       >
         <template v-slot:default>
           <thead>
@@ -67,14 +68,14 @@
               <th scope="col" class="text-center">Stock</th>
               <th scope="col" class="text-center">#</th>
               <th scope="col" class="text-center">Days</th>
-              <th scope="col" class="text-center">Due date</th>
+              <th scope="col" class="text-center" style="width: 120px;">Due date</th>
               <th scope="col" class="text-center">Interest</th>
               <th scope="col" class="text-center">Principal</th>
               <th scope="col" class="text-center">Payment</th>
               <th scope="col" class="text-center">Principal payment</th>
               <th scope="col" class="text-center">Principal balance</th>
               <th scope="col" class="text-center">Status</th>
-              <th scope="col" class="text-center">Paid date</th>
+              <th scope="col" class="text-center" style="width: 120px;">Paid date</th>
             </tr>
           </thead>
           <tbody>
@@ -87,15 +88,15 @@
               <td class="text-center">{{ loan.nroParcela }}/{{ loan.contrato.qtdeParcelas }}</td>
               <td class="text-center">{{ loan.diasPrimeiraParcela ? loan.diasPrimeiraParcela : loan.diasProximaParcela }}</td>
               <td class="text-center">{{ loan.dataPagamento }}</td>
-              <td class="text-center">juros</td>
-              <td class="text-center">{{loan.contrato.totalPagar.toFixed(2)}}</td>
-              <td class="text-center">{{loan.vlParcela.toFixed(2)}}</td>
-              <td class="text-center">{{loan.vlParcela.toFixed(2)}}</td>
-              <td class="text-center">{{loan.contrato.totalPagar.toFixed(2)}}</td>
+              <td class="text-center">${{ loan.vlParcelaJuros.toFixed(2) }}</td>
+              <td class="text-center">${{loan.contrato.totalPagar.toFixed(2)}}</td>
+              <td class="text-center">${{loan.vlParcela.toFixed(2)}}</td>
+              <td class="text-center">${{ (loan.vlParcela - loan.vlParcelaJuros).toFixed(2)}}</td>
+              <td class="text-center">${{ (loan.contrato.totalPagar - loan.vlParcela).toFixed(2)}}</td>
               <td class="text-center">{{loan.situacao}}</td>
               <td class="text-center">
                   {{loan.dataPagamentoPaga}}
-                  <span v-if="loan.situacao != 'PAID'">
+                  <span v-if="loan.situacao != 'PAID' && loan.situacao != 'DEACTIVADED'">
                       <input type="checkbox" v-on:click="checkLoanForPay(loan)">
                       Pay
                   </span>
@@ -104,6 +105,25 @@
           </tbody>
         </template>
       </v-simple-table>
+      <v-row style="margin-top: 5px;" align="center" justify="center" v-if="loans.length && !isLoading">
+        <v-col sm="3">
+          <strong>Total Loans: </strong> {{loans.length}}
+        </v-col>
+
+        <v-col sm="3">
+          <strong>Total Interest: </strong> $500
+        </v-col>
+
+        <v-col sm="3">
+          <strong>Total Payments: </strong> {{totalPayments}}
+        </v-col>
+        
+        <v-col sm="1" v-if="loansList.length">
+          <v-btn style="margin-top: 25px;" depressed color="primary" v-on:click="bulkPay(loansList)">
+            Bulk pay
+          </v-btn>
+        </v-col>  
+      </v-row>
     </v-row>
     
   </div>
@@ -116,6 +136,7 @@ import DatePicker from 'vue2-datepicker';
 import ParcelaService from "../services/ParcelaService";
 import PartnerService from "../../partners/services/PartnerService";
 import _ from 'lodash';
+import LoanService from '../../loans/services/LoanService';
 
 export default {
   name: "Home",
@@ -137,9 +158,11 @@ export default {
     options: [
       { id: 1, value: 'All' },
       { id: 2, value: 'UNPAID' },
-      { id: 3, value: 'PAID' }
+      { id: 3, value: 'PAID' },
+      { id: 4, value: 'DEACTIVADED' }
     ],
-    loansList: []
+    loansList: [],
+    totalPayments: 0.0
   }),
   created() {
     this.init()
@@ -174,6 +197,7 @@ export default {
           finder.endDate
       ).then((response) => {
           this.loans = response.data;
+          this.totalPayments = _.sumBy(this.loans, 'vlParcela')
       }).finally(() => {
           this.isLoading = false;
       }); 
@@ -192,11 +216,48 @@ export default {
         _.remove(this.loansList, (item) => {
           return item.id == loan.id
         });
+
+        this.$forceUpdate(this.loansList);
       } else {
         this.loansList.push(loan);
       }
+    },
 
-      console.log(this.loansList)
+    bulkPay(loansList) {
+      this.isLoading = true;
+      this.$vToastify.info({
+        title: 'Payment in process!',
+        body: 'Sending emails to partners to verify your paid loans.',
+        canTimeout: true,
+        duration: 5000
+      });
+
+      let nrosParcelas = [];
+
+      loansList.map(loan => {
+        nrosParcelas.push(loan.nroParcela);
+      });
+
+      loansList.map(loan => {
+        LoanService.pay(loan.contrato.id, nrosParcelas).then(response => {
+          this.$vToastify.success({
+            title: 'Success!',
+            body: 'Payments processed with success.',
+            canTimeout: true,
+            duration: 2000
+          });
+        }).then(() => {
+          this.isLoading = false;
+          this.init();
+        }).catch(err => {
+          this.$vToastify.error({
+            title: 'Error!',
+            body: 'An error ocurred! Please try again!',
+            canTimeout: true,
+            duration: 2000
+          });
+        });
+      });
     }
   }
 };
