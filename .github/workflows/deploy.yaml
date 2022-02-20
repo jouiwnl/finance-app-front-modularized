@@ -10,7 +10,7 @@ jobs:
       - uses: actions/checkout@v1
       - uses: actions/setup-node@v1
         with:
-          node-version: '16.6'
+          node-version: '16.14'
       - name: setup git auth
         env:
           email: 'jou.098olo@gmail.com'
