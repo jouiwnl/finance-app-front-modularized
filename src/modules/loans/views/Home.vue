@@ -59,6 +59,7 @@
 <script>
 
 import LoanService from '../services/LoanService';
+import CreateToast from '../../../utils/createToast';
 
 export default {
   name: "Home",
@@ -81,12 +82,7 @@ export default {
         this.loans = this.loans.sort();
         this.isLoading = false;
       }).catch(err => {
-        this.$vToastify.error({
-          title: 'Error!',
-          body: 'An error ocurred! Please try again!',
-          canTimeout: true,
-          duration: 2000
-        });
+        CreateToast.createToastFailed('An error ocurred! Please try again!');
       });
     },
 
@@ -95,20 +91,10 @@ export default {
         if (response) {
           this.isLoading = true;
           LoanService.inactive(idLoan).then(() => {
-            this.$vToastify.success({
-              title: 'Success!',
-              body: 'Operation success.',
-              canTimeout: true,
-              duration: 2000
-            });
+            CreateToast.createToastSuccess('Operation success.');
             this.init();
           }).catch(err => {
-            this.$vToastify.error({
-              title: 'Error!',
-              body: 'An error ocurred! Please try again!',
-              canTimeout: true,
-              duration: 2000
-            });
+            CreateToast.createToastFailed('An error ocurred! Please try again!');
           });
         }
       });

@@ -42,6 +42,7 @@
 <script>
 import PartnerService from '../services/PartnerService';
 import rules from '../../../rules/rules';
+import CreateToast from '../../../utils/createToast';
 
 export default {
   name: "Partner",
@@ -59,12 +60,7 @@ export default {
         this.partner = response.data;
         this.isLoading = false;
       }).catch(err => {
-        this.$vToastify.error({
-          title: 'Error!',
-          body: 'An error ocurred! Please try again!',
-          canTimeout: true,
-          duration: 2000
-        });
+        CreateToast.createToastFailed('An error ocurred! Please try again!');
       });
     }
   },
@@ -74,39 +70,19 @@ export default {
       this.isLoading = true;
       if (partner.id) {
         PartnerService.update(partner, partner.id).then(response => {
-          this.$vToastify.success({
-            title: 'Success!',
-            body: 'Operation success.',
-            canTimeout: true,
-            duration: 2000
-          });
+          CreateToast.createToastSuccess('Edit success.');
           this.isLoading = false;
           this.$router.push({ path: '/partners' });
         }).catch(err => {
-          this.$vToastify.error({
-            title: 'Error!',
-            body: 'An error ocurred! Please try again!',
-            canTimeout: true,
-            duration: 2000
-          });
+          CreateToast.createToastFailed('An error ocurred! Please try again!');
         });
       } else {
         PartnerService.create(partner).then(response => {
-          this.$vToastify.success({
-            title: 'Success!',
-            body: 'Operation success.',
-            canTimeout: true,
-            duration: 2000
-          });
+          CreateToast.createToastSuccess('Register success.');
           this.isLoading = false;
           this.$router.push({ path: '/partners' });
         }).catch(err => {
-          this.$vToastify.error({
-            title: 'Error!',
-            body: 'An error ocurred! Please try again!',
-            canTimeout: true,
-            duration: 2000
-          });
+          CreateToast.createToastFailed('An error ocurred! Please try again!');
         });
       }
     },

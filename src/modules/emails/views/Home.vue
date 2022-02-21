@@ -47,6 +47,7 @@
 </template>
 
 <script>
+import CreateToast from '../../../utils/createToast';
 import EmailService from "../services/EmailService";
 
 export default {
@@ -71,12 +72,7 @@ export default {
         this.emails = this.emails.sort();
         this.isLoading = false;
       }).catch(err => {
-        this.$vToastify.error({
-          title: 'Error!',
-          body: 'An error ocurred! Please try again!',
-          canTimeout: true,
-          duration: 2000
-        });
+        CreateToast.createToastFailed('An error ocurred! Please try again!');
       }); 
     },
 
@@ -84,21 +80,11 @@ export default {
       this.$confirm(`This action will deactivate this register (this action cannot be undone). Do you wish to continue?`).then(response => {
           if (response) {
             EmailService.delete(emailId).then(response => {
-              this.$vToastify.success({
-                title: 'Success!',
-                body: 'Operation success.',
-                canTimeout: true,
-                duration: 2000
-              });
+              CreateToast.createToastSuccess('Operation success.');
 
               this.init();
             }).catch(err => {
-              this.$vToastify.error({
-                title: 'Error!',
-                body: 'An error ocurred! Please try again!',
-                canTimeout: true,
-                duration: 2000
-              });
+              CreateToast.createToastFailed('An error ocurred! Please try again!');
             });
           } 
       })

@@ -42,6 +42,7 @@
 <script>
 import EmailService from '../services/EmailService';
 import rules from '../../../rules/rules';
+import CreateToast from '../../../utils/createToast';
 
 export default {
   name: "Partner",
@@ -59,12 +60,7 @@ export default {
         this.email = response.data;
         this.isLoading = false;
       }).catch(err => {
-        this.$vToastify.error({
-          title: 'Error!',
-          body: 'An error ocurred! Please try again!',
-          canTimeout: true,
-          duration: 2000
-        });
+        CreateToast.createToastFailed('An error ocurred! Please try again!');
       });
     }
   },
@@ -74,39 +70,19 @@ export default {
       this.isLoading = true;
       if (email.id) {
         EmailService.update(email, email.id).then(response => {
-          this.$vToastify.success({
-            title: 'Success!',
-            body: 'Operation success.',
-            canTimeout: true,
-            duration: 2000
-          });
+          CreateToast.createToastSuccess('Edit success.');
           this.isLoading = false;
           this.$router.push({ path: '/emails' });
         }).catch(err => {
-          this.$vToastify.error({
-            title: 'Error!',
-            body: 'An error ocurred! Please try again!',
-            canTimeout: true,
-            duration: 2000
-          });
+          CreateToast.createToastFailed('An error ocurred! Please try again!');
         });
       } else {
         EmailService.create(email).then(response => {
-          this.$vToastify.success({
-            title: 'Success!',
-            body: 'Operation success.',
-            canTimeout: true,
-            duration: 2000
-          });
+          CreateToast.createToastSuccess('Register success.')
           this.isLoading = false;
           this.$router.push({ path: '/emails' });
         }).catch(err => {
-          this.$vToastify.error({
-            title: 'Error!',
-            body: 'An error ocurred! Please try again!',
-            canTimeout: true,
-            duration: 2000
-          });
+          CreateToast.createToastFailed('An error ocurred! Please try again!');
         });
       }
     },

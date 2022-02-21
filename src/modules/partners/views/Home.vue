@@ -53,6 +53,7 @@
 
 <script>
 import PartnerService from "../services/PartnerService";
+import CreateToast from '../../../utils/createToast';
 
 export default {
   name: "Home",
@@ -76,12 +77,7 @@ export default {
         this.partners = this.partners.sort();
         this.isLoading = false;
       }).catch(err => {
-        this.$vToastify.error({
-          title: 'Error!',
-          body: 'An error ocurred! Please try again!',
-          canTimeout: true,
-          duration: 2000
-        });
+        CreateToast.createToastFailed('An error ocurred! Please try again!');
       }); 
     },
 
@@ -89,20 +85,10 @@ export default {
       this.$confirm(`This action will deactivate all loans related to this registration (this action cannot be undone). Do you wish to continue?`).then(response => {
         if (response) {
           PartnerService.inactive(idPartner).then(() => {
-            this.$vToastify.success({
-              title: 'Success!',
-              body: 'Operation success.',
-              canTimeout: true,
-              duration: 2000
-            });
+            CreateToast.createToastSuccess('Operation success.');
             this.init();
           }).catch(err => {
-            this.$vToastify.error({
-              title: 'Error!',
-              body: 'An error ocurred! Please try again!',
-              canTimeout: true,
-              duration: 2000
-            });
+            CreateToast.createToastFailed('An error ocurred! Please try again!');
           });
         }
       });

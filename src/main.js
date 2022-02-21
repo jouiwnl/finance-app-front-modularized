@@ -3,6 +3,8 @@ import App from "./App.vue";
 import router from "./router";
 window.$ = window.jQuery = require('jquery');
 import 'jquery';
+window.tata = require('tata-js');
+import 'tata-js';
 
 import 'vue-search-select/dist/VueSearchSelect.css';
 import 'vue2-datepicker/index.css';

@@ -90,6 +90,7 @@
 
 import PartnerService from '../modules/partners/services/PartnerService';
 import ParcelaService from '../modules/finder/services/ParcelaService';
+import CreateToast from '../utils/createToast';
 import _ from 'lodash';
 
 export default {
@@ -121,20 +122,10 @@ export default {
         }).then(() => {
           this.isLoading = false;
         }).catch(err => {
-          this.$vToastify.error({
-            title: 'Error!',
-            body: 'An error ocurred! Please try again!',
-            canTimeout: true,
-            duration: 2000
-          });
+          CreateToast.createToastSuccess('An error ocurred! Please try again!');
         });
       }).catch(err => {
-        this.$vToastify.error({
-          title: 'Error!',
-          body: 'An error ocurred! Please try again!',
-          canTimeout: true,
-          duration: 2000
-        });
+        CreateToast.createToastSuccess('An error ocurred! Please try again!');
       });
     },
 

@@ -108,6 +108,7 @@ import moment from 'moment';
 import { ModelListSelect } from 'vue-search-select';
 import DatePicker from 'vue2-datepicker';
 import rules from '../../../rules/rules';
+import CreateToast from '../../../utils/createToast';
 
 export default {
   name: "Loan",
@@ -142,12 +143,7 @@ export default {
         this.loan = response.data;
         this.isLoading = false;
       }).catch(err => {
-        this.$vToastify.error({
-          title: 'Error!',
-          body: 'An error ocurred! Please try again!',
-          canTimeout: true,
-          duration: 2000
-        });
+        CreateToast.createToastFailed('An error ocurred! Please try again!');
       });
     }
   },
@@ -157,21 +153,11 @@ export default {
       this.isLoading = true;
       if (loan) {
         LoanService.create(loan).then(response => {
-          this.$vToastify.success({
-            title: 'Success!',
-            body: 'Operation success.',
-            canTimeout: true,
-            duration: 2000
-          });
+          CreateToast.createToastSuccess('Operation success.');
           this.isLoading = false;
           this.$router.push({ path: '/loans' });
         }).catch(err => {
-          this.$vToastify.error({
-            title: 'Error!',
-            body: 'An error ocurred! Please try again!',
-            canTimeout: true,
-            duration: 2000
-          });
+          CreateToast.createToastFailed('An error ocurred! Please try again!');
         });
       }
     },

@@ -137,6 +137,7 @@ import ParcelaService from "../services/ParcelaService";
 import PartnerService from "../../partners/services/PartnerService";
 import _ from 'lodash';
 import LoanService from '../../loans/services/LoanService';
+import CreateToast from '../../../utils/createToast';
 
 export default {
   name: "Home",
@@ -181,12 +182,7 @@ export default {
         this.isLoading = false;
         this.partners = this.partners.filter(partner => partner.situacao != 'DEACTIVADED').sort();
       }).catch(err => {
-        this.$vToastify.error({
-          title: 'Error!',
-          body: 'An error ocurred! Please try again!',
-          canTimeout: true,
-          duration: 2000
-        });
+        CreateToast.createToastFailed('An error ocurred! Please try again!');
       });
     },
 
@@ -229,12 +225,7 @@ export default {
     bulkPay(loansList) {
       if (this.checkMoreThanOnePartner(loansList)) {
         this.isLoading = true;
-        this.$vToastify.info({
-          title: 'Payment in process!',
-          body: 'Sending emails to partners to verify your paid loans.',
-          canTimeout: true,
-          duration: 5000
-        });
+        CreateToast.createToastInfo('Payment in process!', 'Sending emails to partners to verify your paid loans.');
 
         let nrosParcelas = [];
 
@@ -243,22 +234,12 @@ export default {
         })
         
         LoanService.pay(loansList[0].contrato.id, nrosParcelas).then(response => {
-          this.$vToastify.success({
-            title: 'Success!',
-            body: 'Payments processed with success.',
-            canTimeout: true,
-            duration: 2000
-          });
+          CreateToast.createToastSuccess('Payments processed with success.');
         }).then(() => {
           this.isLoading = false;
           this.init();
         }).catch(err => {
-          this.$vToastify.error({
-            title: 'Error!',
-            body: 'An error ocurred! Please try again!',
-            canTimeout: true,
-            duration: 2000
-          });
+          CreateToast.createToastFailed('An error ocurred! Please try again!');
         });
 
         this.$forceUpdate(this.loans);
@@ -274,13 +255,7 @@ export default {
       console.log(newList)
 
       if (newList.length > 1) {
-        this.$vToastify.error({
-          title: 'Error!',
-          body: `It's not possible pay two different partners at the same time. Please, use filters to find and pay separately!`,
-          canTimeout: true,
-          duration: 3000
-        });
-
+        CreateToast.createToastWarning(`It's not possible pay two different partners at the same time. Please, use filters to find and pay separately!`);
         return false;
       }
 
