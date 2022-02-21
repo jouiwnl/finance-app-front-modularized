@@ -57,7 +57,7 @@
     <v-row justify="center" style="margin-top: 10px;">
       <v-simple-table
         fixed-header
-        height="500px"
+        height="350px"
         v-if="!isLoading && loans.length"
         style="width: 100%;"
       >
@@ -111,15 +111,15 @@
         </v-col>
 
         <v-col sm="3">
-          <strong>Total Interest: </strong> $500
+          <strong>Total Interest: </strong> ${{totalInterests.toFixed(2)}}
         </v-col>
 
         <v-col sm="3">
-          <strong>Total Payments: </strong> {{totalPayments}}
+          <strong>Total Payments: </strong> ${{totalPayments.toFixed(2)}}
         </v-col>
         
         <v-col sm="1" v-if="loansList.length">
-          <v-btn style="margin-top: 25px;" depressed color="primary" v-on:click="bulkPay(loansList)">
+          <v-btn depressed color="primary" v-on:click="bulkPay(loansList)">
             Bulk pay
           </v-btn>
         </v-col>  
@@ -162,7 +162,8 @@ export default {
       { id: 4, value: 'DEACTIVADED' }
     ],
     loansList: [],
-    totalPayments: 0.0
+    totalPayments: 0.0,
+    totalInterests: 0.0
   }),
   created() {
     this.init()
@@ -198,7 +199,8 @@ export default {
           finder.endDate
       ).then((response) => {
           this.loans = response.data;
-          this.totalPayments = _.sumBy(this.loans, 'vlParcela')
+          this.totalPayments = _.sumBy(this.loans, 'vlParcela');
+          this.totalInterests = _.sumBy(this.loans, 'vlParcelaJuros')
       }).finally(() => {
           this.isLoading = false;
       }); 

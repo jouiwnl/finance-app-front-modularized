@@ -110,14 +110,15 @@ export default {
     init() {
       this.isLoading = true;
       PartnerService.findAll().then(response => {
-        this.partners = response.data;
+        this.partners = _.remove(response.data, (item) => {
+          return item.situacao == 'ACTIVE'
+        });;
 
         ParcelaService.thisweekpayments().then(responseLoan => {
-          this.loans = responseLoan.data;
-        }).then(() => {
-          _.remove(this.loans, (item) => {
+          this.loans = _.remove(responseLoan.data, (item) => {
             return item.situacao == 'PAID'
           });
+        }).then(() => {
           this.isLoading = false;
         }).catch(err => {
           this.$vToastify.error({
