@@ -70,9 +70,10 @@ export default {
       EmailService.findAll().then(response => {
         this.emails = response.data;
         this.emails = this.emails.sort();
-        this.isLoading = false;
       }).catch(err => {
         CreateToast.createToastFailed('An error ocurred! Please try again!');
+      }).finally(() => {
+        this.isLoading = false;
       }); 
     },
 
@@ -81,7 +82,6 @@ export default {
           if (response) {
             EmailService.delete(emailId).then(response => {
               CreateToast.createToastSuccess('Operation success.');
-
               this.init();
             }).catch(err => {
               CreateToast.createToastFailed('An error ocurred! Please try again!');

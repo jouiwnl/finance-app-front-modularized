@@ -179,10 +179,11 @@ export default {
         response.data.map(result => {
           this.partners.push(result);
         });
-        this.isLoading = false;
         this.partners = this.partners.filter(partner => partner.situacao != 'DEACTIVADED').sort();
       }).catch(err => {
         CreateToast.createToastFailed('An error ocurred! Please try again!');
+      }).finally(() => {
+        this.isLoading = false;
       });
     },
 
@@ -236,10 +237,11 @@ export default {
         LoanService.pay(loansList[0].contrato.id, nrosParcelas).then(response => {
           CreateToast.createToastSuccess('Payments processed with success.');
         }).then(() => {
-          this.isLoading = false;
           this.init();
         }).catch(err => {
           CreateToast.createToastFailed('An error ocurred! Please try again!');
+        }).finally(() => {
+          this.isLoading = false;
         });
 
         this.$forceUpdate(this.loans);
@@ -251,8 +253,6 @@ export default {
       let newList = _.uniqBy(loanList, (loan) => {
         return loan.idContrato;
       });
-
-      console.log(newList)
 
       if (newList.length > 1) {
         CreateToast.createToastWarning(`It's not possible pay two different partners at the same time. Please, use filters to find and pay separately!`);

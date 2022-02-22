@@ -75,9 +75,10 @@ export default {
       PartnerService.findAll().then(response => {
         this.partners = response.data;
         this.partners = this.partners.sort();
-        this.isLoading = false;
       }).catch(err => {
         CreateToast.createToastFailed('An error ocurred! Please try again!');
+      }).finally(() => {
+        this.isLoading = false;
       }); 
     },
 

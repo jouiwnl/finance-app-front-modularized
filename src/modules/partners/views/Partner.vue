@@ -58,9 +58,10 @@ export default {
       this.isLoading = true;
       PartnerService.findById(this.$route.params.id).then(response => {
         this.partner = response.data;
-        this.isLoading = false;
       }).catch(err => {
         CreateToast.createToastFailed('An error ocurred! Please try again!');
+      }).finally(() => {
+        this.isLoading = false;
       });
     }
   },
@@ -71,18 +72,20 @@ export default {
       if (partner.id) {
         PartnerService.update(partner, partner.id).then(response => {
           CreateToast.createToastSuccess('Edit success.');
-          this.isLoading = false;
           this.$router.push({ path: '/partners' });
         }).catch(err => {
           CreateToast.createToastFailed('An error ocurred! Please try again!');
+        }).finally(() => {
+          this.isLoading = false;
         });
       } else {
         PartnerService.create(partner).then(response => {
           CreateToast.createToastSuccess('Register success.');
-          this.isLoading = false;
           this.$router.push({ path: '/partners' });
         }).catch(err => {
           CreateToast.createToastFailed('An error ocurred! Please try again!');
+        }).finally(() => {
+          this.isLoading = false;
         });
       }
     },

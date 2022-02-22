@@ -5,11 +5,10 @@ window.$ = window.jQuery = require('jquery');
 import 'jquery';
 window.tata = require('tata-js');
 import 'tata-js';
+import VueHtmlToPaper from 'vue-html-to-paper';
 
 import 'vue-search-select/dist/VueSearchSelect.css';
 import 'vue2-datepicker/index.css';
-
-import VueToastify from "vue-toastify";
 
 import partnersModule from "./modules/partners";
 import finderModule from "./modules/finder";
@@ -28,9 +27,22 @@ registerModules({
   emails: emailsModule
 });
 
+const options = {
+  name: '_blank',
+  specs: [
+    'fullscreen=yes',
+    'titlebar=yes',
+    'scrollbars=yes'
+  ],
+  styles: [
+    'https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css',
+    'https://unpkg.com/kidlat-css/css/kidlat.css'
+  ]
+}
+
 Vue.config.productionTip = false;
-Vue.use(VueToastify);
 Vue.use(VuetifyConfirm, { vuetify });
+Vue.use(VueHtmlToPaper, options);
 
 export const eventBus = new Vue();
 

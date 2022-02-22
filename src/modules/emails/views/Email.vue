@@ -58,9 +58,10 @@ export default {
       this.isLoading = true;
       EmailService.findById(this.$route.params.id).then(response => {
         this.email = response.data;
-        this.isLoading = false;
       }).catch(err => {
         CreateToast.createToastFailed('An error ocurred! Please try again!');
+      }).finally(() => {
+        this.isLoading = false;
       });
     }
   },
@@ -71,18 +72,20 @@ export default {
       if (email.id) {
         EmailService.update(email, email.id).then(response => {
           CreateToast.createToastSuccess('Edit success.');
-          this.isLoading = false;
           this.$router.push({ path: '/emails' });
         }).catch(err => {
           CreateToast.createToastFailed('An error ocurred! Please try again!');
+        }).finally(() => {
+          this.isLoading = false;
         });
       } else {
         EmailService.create(email).then(response => {
           CreateToast.createToastSuccess('Register success.')
-          this.isLoading = false;
           this.$router.push({ path: '/emails' });
         }).catch(err => {
           CreateToast.createToastFailed('An error ocurred! Please try again!');
+        }).finally(() => {
+          this.isLoading = false;
         });
       }
     },

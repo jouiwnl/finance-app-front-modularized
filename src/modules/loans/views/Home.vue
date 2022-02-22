@@ -22,7 +22,7 @@
       </v-alert>
     </v-row>
 
-    <v-row v-else-if="loans.length">
+    <v-row v-else-if="loans.length && !isLoading">
       <v-col sm="4" v-for="loan in loans" :key="loan.id">
         <v-card :disabled="loan.situacao == 'DEACTIVADED' || loan.situacao == 'PAID'">
           <v-card-title>
@@ -80,9 +80,10 @@ export default {
       LoanService.findAll().then(response => {
         this.loans = response.data;
         this.loans = this.loans.sort();
-        this.isLoading = false;
       }).catch(err => {
         CreateToast.createToastFailed('An error ocurred! Please try again!');
+      }).finally(() => {
+        this.isLoading = false;
       });
     },
 

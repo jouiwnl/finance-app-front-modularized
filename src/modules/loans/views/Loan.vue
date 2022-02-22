@@ -79,6 +79,7 @@
       <v-row justify="center">
         <v-col sm="4" class="buttons-group">
           <v-btn v-on:click="$router.back()" depressed>Cancel</v-btn>
+          <v-btn v-if="loan.id" :to="`/loans/${loan.id}/report`" depressed>See as report</v-btn>
           <v-btn 
               :disabled="!loan.valorParcela || 
                         !loan.percJuros || 
@@ -141,9 +142,10 @@ export default {
       this.isEditing = true;
       LoanService.findById(this.$route.params.id).then(response => {
         this.loan = response.data;
-        this.isLoading = false;
       }).catch(err => {
         CreateToast.createToastFailed('An error ocurred! Please try again!');
+      }).finally(() => {
+        this.isLoading = false;
       });
     }
   },
@@ -154,13 +156,14 @@ export default {
       if (loan) {
         LoanService.create(loan).then(response => {
           CreateToast.createToastSuccess('Operation success.');
-          this.isLoading = false;
           this.$router.push({ path: '/loans' });
         }).catch(err => {
           CreateToast.createToastFailed('An error ocurred! Please try again!');
+        }).finally(() => {
+          this.isLoading = false;
         });
       }
-    },
+    }
   }
 
 };

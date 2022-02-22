@@ -18,7 +18,7 @@
 
       <v-row align="center" justify="center" v-if="!isLoading">
         <v-col sm="6">
-          <v-card width="600px" height="300px" style="margin-top: 13px;" v-for="partner in partners" :key="partner.id" outlined>
+          <v-card width="600px" height="350px" style="margin-top: 13px;" v-for="partner in partners" :key="partner.id" outlined>
             <v-card-title style="justify-content: center;">
               <h3>{{ partner.nome }} Loans</h3>
             </v-card-title>
@@ -35,8 +35,20 @@
               ></v-progress-linear>
             </v-container>
             <v-row justify="center" style="margin-top: 20px;">
-              <v-btn color="primary" depressed>
+              <v-btn color="primary" width="200px" depressed>
                 Calculate pay-off
+              </v-btn>
+            </v-row>
+
+            <v-row justify="center" style="margin-top: 20px;">
+              <v-btn color="primary" width="200px" depressed>
+                Payments Next Week
+              </v-btn>
+            </v-row>
+
+            <v-row justify="center" style="margin-top: 20px;">
+              <v-btn color="error" width="200px" depressed>
+                Payments This Week
               </v-btn>
             </v-row>
           </v-card>
@@ -117,15 +129,17 @@ export default {
 
         ParcelaService.thisweekpayments().then(responseLoan => {
           this.loans = _.remove(responseLoan.data, (item) => {
-            return item.situacao == 'PAID'
+            return item.situacao == 'UNPAID'
           });
-        }).then(() => {
-          this.isLoading = false;
         }).catch(err => {
           CreateToast.createToastSuccess('An error ocurred! Please try again!');
+        }).finally(() => {
+          this.isLoading = false;
         });
       }).catch(err => {
         CreateToast.createToastSuccess('An error ocurred! Please try again!');
+      }).finally(() => {
+        this.isLoading = false;
       });
     },
 

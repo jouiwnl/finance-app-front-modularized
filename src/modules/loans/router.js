@@ -1,6 +1,7 @@
 const Module = () => import("./Module.vue");
 const Home = () => import("./views/Home.vue");
 const Loan = () => import("./views/Loan.vue");
+const LoanReport = () => import("./views/LoanReport.vue");
 
 const moduleRoute = {
   path: "/loans",
@@ -14,7 +15,13 @@ const moduleRoute = {
     {
       path: ":id",
       component: Loan
+    },
+
+    {
+      path: ":id/report",
+      component: LoanReport
     }
+
   ]
 };
 
