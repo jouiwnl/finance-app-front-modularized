@@ -41,13 +41,13 @@
             </v-row>
 
             <v-row justify="center" style="margin-top: 20px;">
-              <v-btn color="primary" width="200px" depressed>
+              <v-btn color="primary" v-on:click="loadPartnerNextWeekPayments(partner)" width="200px" depressed>
                 Payments Next Week
               </v-btn>
             </v-row>
 
             <v-row justify="center" style="margin-top: 20px;">
-              <v-btn color="error" width="200px" depressed>
+              <v-btn color="error" v-on:click="loadPartnerThisWeekPayments(partner)" width="200px" depressed>
                 Payments This Week
               </v-btn>
             </v-row>
@@ -125,7 +125,7 @@ export default {
       PartnerService.findAll().then(response => {
         this.partners = _.remove(response.data, (item) => {
           return item.situacao == 'ACTIVE'
-        });;
+        });
 
         ParcelaService.thisweekpayments().then(responseLoan => {
           this.loans = _.remove(responseLoan.data, (item) => {
@@ -145,6 +145,32 @@ export default {
 
     loadLoan(idLoan) {
       this.$router.push(`/loans/${idLoan}`);
+    },
+
+    loadPartnerThisWeekPayments(partner) {
+      this.isLoading = true;
+      ParcelaService.thisweekpayments(partner.id).then(responseLoan => {
+        this.loans = _.remove(responseLoan.data, (item) => {
+          return item.situacao == 'UNPAID'
+        });
+      }).catch(err => {
+        CreateToast.createToastSuccess('An error ocurred! Please try again!');
+      }).finally(() => {
+        this.isLoading = false;
+      });
+    },
+
+    loadPartnerNextWeekPayments(partner) {
+      this.isLoading = true;
+      ParcelaService.nextweekpayments(partner.id).then(responseLoan => {
+        this.loans = _.remove(responseLoan.data, (item) => {
+          return item.situacao == 'UNPAID'
+        });
+      }).catch(err => {
+        CreateToast.createToastSuccess('An error ocurred! Please try again!');
+      }).finally(() => {
+        this.isLoading = false;
+      });
     }
     
   }

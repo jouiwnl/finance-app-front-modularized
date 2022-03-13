@@ -32,7 +32,19 @@ export default {
         return http.get(montarUrlComFiltros(partnerName, paymentStatus, initDate, finalDate))
     },
 
-    thisweekpayments: () => {
-        return http.get(`parcelas/thisweekpayments`);
+    thisweekpayments: (partnerId) => {
+        if (partnerId) {
+            return http.get(`parcelas/thisweekpayments?partnerId=${partnerId}`); 
+        }
+
+        return http.get(`parcelas/thisweekpayments`); 
+    },
+
+    nextweekpayments: (partnerId) => {
+        if (partnerId) {
+            return http.get(`parcelas/nextweekpayments?partnerId=${partnerId}`); 
+        }
+
+        return http.get(`parcelas/nextweekpayments`); 
     }
 }

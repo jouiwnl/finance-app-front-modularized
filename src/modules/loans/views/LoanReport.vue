@@ -78,10 +78,10 @@
                         <td class="text-center">{{ parcela.diasPrimeiraParcela ? parcela.diasPrimeiraParcela : parcela.diasProximaParcela }}</td>
                         <td class="text-center">{{ parcela.dataPagamento }}</td>
                         <td class="text-center">${{ parcela.vlParcelaJuros.toFixed(2) }}</td>
-                        <td class="text-center">${{loan.totalPagar.toFixed(2)}}</td>
+                        <td class="text-center">${{(parcela.vlParcela + (parcela.balanceAfterPayment - parcela.valorTotalJurosLoan)).toFixed(2)}}</td>
                         <td class="text-center">${{parcela.vlParcela.toFixed(2)}}</td>
                         <td class="text-center">${{ (parcela.vlParcela - parcela.vlParcelaJuros).toFixed(2)}}</td>
-                        <td class="text-center">${{ (loan.totalPagar - parcela.vlParcela).toFixed(2)}}</td>
+                        <td class="text-center">${{ (parcela.balanceAfterPayment - parcela.valorTotalJurosLoan).toFixed(2)}}</td>
                         <td class="text-center">{{parcela.situacao}}</td>
                         <td class="text-center">{{parcela.dataPagamentoPaga}}</td>
                         </tr>

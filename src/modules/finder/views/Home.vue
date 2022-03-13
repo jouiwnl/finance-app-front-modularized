@@ -89,10 +89,10 @@
               <td class="text-center">{{ loan.diasPrimeiraParcela ? loan.diasPrimeiraParcela : loan.diasProximaParcela }}</td>
               <td class="text-center">{{ loan.dataPagamento }}</td>
               <td class="text-center">${{ loan.vlParcelaJuros.toFixed(2) }}</td>
-              <td class="text-center">${{loan.contrato.totalPagar.toFixed(2)}}</td>
+              <td class="text-center">${{(loan.vlParcela + (loan.balanceAfterPayment - loan.valorTotalJurosLoan)).toFixed(2)}}</td>
               <td class="text-center">${{loan.vlParcela.toFixed(2)}}</td>
               <td class="text-center">${{ (loan.vlParcela - loan.vlParcelaJuros).toFixed(2)}}</td>
-              <td class="text-center">${{ (loan.contrato.totalPagar - loan.vlParcela).toFixed(2)}}</td>
+              <td class="text-center">${{ (loan.balanceAfterPayment - loan.valorTotalJurosLoan).toFixed(2)}}</td>
               <td class="text-center">{{loan.situacao}}</td>
               <td class="text-center">
                   {{loan.dataPagamentoPaga}}
