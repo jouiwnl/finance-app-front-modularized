@@ -31,11 +31,12 @@
               <v-progress-linear
                 color="blue"
                 height="20"
+                v-bind:value="(partner.totalReportsPaid * 100)/partner.totalReports"
                 style="border-radius: 4px;"
               ></v-progress-linear>
             </v-container>
             <v-row justify="center" style="margin-top: 20px;">
-              <v-btn color="primary" width="200px" depressed>
+              <v-btn color="primary" width="200px" depressed v-on:click="calculatePayoff(partner.id)">
                 Calculate pay-off
               </v-btn>
             </v-row>
@@ -132,12 +133,12 @@ export default {
             return item.situacao == 'UNPAID'
           });
         }).catch(err => {
-          CreateToast.createToastSuccess('An error ocurred! Please try again!');
+          CreateToast.createToastFailed('An error ocurred! Please try again!');
         }).finally(() => {
           this.isLoading = false;
         });
       }).catch(err => {
-        CreateToast.createToastSuccess('An error ocurred! Please try again!');
+        CreateToast.createToastFailed('An error ocurred! Please try again!');
       }).finally(() => {
         this.isLoading = false;
       });
@@ -154,7 +155,7 @@ export default {
           return item.situacao == 'UNPAID'
         });
       }).catch(err => {
-        CreateToast.createToastSuccess('An error ocurred! Please try again!');
+        CreateToast.createToastFailed('An error ocurred! Please try again!');
       }).finally(() => {
         this.isLoading = false;
       });
@@ -167,10 +168,14 @@ export default {
           return item.situacao == 'UNPAID'
         });
       }).catch(err => {
-        CreateToast.createToastSuccess('An error ocurred! Please try again!');
+        CreateToast.createToastFailed('An error ocurred! Please try again!');
       }).finally(() => {
         this.isLoading = false;
       });
+    },
+
+    calculatePayoff(partnerId) {
+      this.$router.push(`/calculatePayoff/${partnerId}`);
     }
     
   }

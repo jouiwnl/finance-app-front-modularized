@@ -46,5 +46,9 @@ export default {
         }
 
         return http.get(`parcelas/nextweekpayments`); 
+    },
+
+    calculatePayoff: (partnerId) => {
+        return http.get(`parcelas/${partnerId}/calculatePayoff`)
     }
 }
